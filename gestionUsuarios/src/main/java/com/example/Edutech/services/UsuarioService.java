@@ -49,7 +49,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public String eliminarUsurio(int usuarioId){
+    public String eliminarUsuario(int usuarioId){
         if (usuarioRepository.existsById(usuarioId)) {
             usuarioRepository.deleteById(usuarioId);
             return "Usuario eliminado";
