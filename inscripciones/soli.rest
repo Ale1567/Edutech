@@ -1,0 +1,12 @@
+### Obtener todas las inscripciones
+GET http://localhost:5000/inscripcion HTTP/1.1
+Accept: application/json
+
+### Crear una nueva inscripción
+POST http://localhost:5000/inscripcion HTTP/1.1
+Content-Type: application/json
+
+{
+    "id_estudiante": 1,
+    "id_curso": 10
+}
