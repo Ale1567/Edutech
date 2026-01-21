@@ -3,6 +3,8 @@ package com.example.gestionIncidencias.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,8 @@ import com.example.gestionIncidencias.models.request.ActualizarIncidencia;
 import com.example.gestionIncidencias.models.request.AgregarIncidencia;
 import com.example.gestionIncidencias.services.IncidenciaService;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 @RequestMapping("incidencia")
 @RestController
 public class IncidenciaController {
@@ -30,8 +34,13 @@ public class IncidenciaController {
     }
 
      @GetMapping("/{incidenciaid}")
-    public Incidencia obtenerPorId(@PathVariable int idIncidencia) {
-        return incidenciaService.obtenerIncidenciasPorId(idIncidencia); 
+    public EntityModel<Incidencia> obtenerPorId(@PathVariable int idIncidencia) {
+        Incidencia incidencia = incidenciaService.obtenerIncidenciasPorId(idIncidencia);
+
+        Link deleteLink = linkTo(IncidenciaController.class).slash(idIncidencia).withRel("Eliminar incidencia");
+        Link selfLink = linkTo(methodOn(IncidenciaController.class).obtenerTodo()).withRel("Obtener todas las incidencias");
+   
+        return EntityModel.of(incidencia,selfLink,deleteLink);
     }
 
     @PostMapping("")
