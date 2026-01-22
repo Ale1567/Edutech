@@ -3,8 +3,7 @@ package com.example.gestionRespaldos.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import com.example.gestionRespaldos.models.request.ActualizarCopia;
 import com.example.gestionRespaldos.models.request.AgregarCopia;
 import com.example.gestionRespaldos.services.CopiaService;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RequestMapping("copia")
 @RestController
@@ -33,12 +31,8 @@ public class CopiaController {
     }
 
     @GetMapping("/{idCopia}")
-    public EntityModel<Copia> obtenerPorId(@PathVariable int idCopia) {
-        Copia copia = copiaService.obtenerCopiaPorId(idCopia);
-
-        Link deleteLink = linkTo(CopiaController.class).slash(idCopia).withRel("Eliminar copias");
-        Link selfLink = linkTo(methodOn(CopiaController.class).obtenerTodo()).withRel("Obtener todas las copias");
-        return EntityModel.of(copia,selfLink,deleteLink);
+    public Copia obtenerPorId(@PathVariable int idCopia) {
+        return copiaService.obtenerCopiaPorId(idCopia); 
     }
 
     @PostMapping("")
