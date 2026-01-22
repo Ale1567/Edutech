@@ -10,7 +10,7 @@ public class ActualizarCopia {
     private int id_copia;
 
     @NotBlank
-    private int version;
+    private Double version;
 
     @NotBlank
     private String nombre;

@@ -7,7 +7,7 @@ import lombok.Data;
 public class AgregarCopia {
     
     @NotBlank
-    private int version;
+    private Double version;
 
     @NotBlank
     private String nombre;
