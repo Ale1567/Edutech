@@ -39,13 +39,13 @@ public class IncidenciaService {
     }
 
     public Incidencia actualizarIncidencia(ActualizarIncidencia nuevo){
-        Incidencia incidencia = incidenciaRepository.findById(nuevo.getId_incidencia()).orElse(null);
+        Incidencia incidencia = incidenciaRepository.findById(nuevo.getIdIncidencia()).orElse(null);
         if (incidencia == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Incidencia no encontrada");
         }
         incidencia.setDescripcion(nuevo.getDescripcion());
         incidencia.setEstado(nuevo.getEstado());
-        incidencia.setPrioridad(nuevo.getId_incidencia());
+        incidencia.setPrioridad(nuevo.getIdIncidencia());
         return incidenciaRepository.save(incidencia);
     }
 

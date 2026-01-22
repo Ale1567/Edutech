@@ -30,7 +30,7 @@ public class TestCopiaService {
     void testObtencionCopiaPorId() {
 
         Copia copia = new Copia();
-        copia.setId_copia(1);
+        copia.setIdCopia(1);
         copia.setNombre("Copia 21/01/2026");
         copia.setVersion(1.1);
  
@@ -40,7 +40,7 @@ public class TestCopiaService {
         Copia resultado = copiaService.obtenerCopiaPorId(1);
 
         assertNotNull(resultado);
-        assertEquals(1, resultado.getId_copia());
+        assertEquals(1, resultado.getIdCopia());
         assertEquals("Juan", resultado.getNombre());
         assertEquals("juan@test.com", resultado.getVersion());
 

@@ -21,8 +21,8 @@ public class InscripcionService {
 
     public Inscripcion registrarInscripcion(AgregarInscripcion nuevo) {
         Inscripcion inscripcion = new Inscripcion();
-        inscripcion.setId_estudiante(nuevo.getId_estudiante());
-        inscripcion.setId_curso(nuevo.getId_curso());
+        inscripcion.setIdEstudiante(nuevo.getIdEstudiante());
+        inscripcion.setIdCurso(nuevo.getIdCurso());
         // El @PrePersist en tu entidad manejará la fecha automáticamente
         return inscripcionRepository.save(inscripcion);
     }

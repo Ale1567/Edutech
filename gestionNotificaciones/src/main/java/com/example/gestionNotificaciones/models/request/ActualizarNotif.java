@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class ActualizarNotif {
     @NotBlank
-    private int id_notif;
+    private int idNotif;
 
     @NotBlank
     private String titulo;

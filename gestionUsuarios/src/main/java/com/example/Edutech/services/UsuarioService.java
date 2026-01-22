@@ -32,20 +32,20 @@ public class UsuarioService {
 
     public Usuario agregarUsuario(AgregarUsuario nuevo){
         Usuario usuario = new Usuario();
-        usuario.setNombre_user(nuevo.getNombre_user());
-        usuario.setEmail_user(nuevo.getEmail_user());
-        usuario.setEstado_user(nuevo.getEstado_user());
+        usuario.setNombre(nuevo.getNombre());
+        usuario.setEmail(nuevo.getEmail());
+        usuario.setEstado(nuevo.getEstado());
         return usuarioRepository.save(usuario);
     }
 
     public Usuario actualizarUsuario(ActualizarUsuario nuevo){
-        Usuario usuario = usuarioRepository.findById(nuevo.getId_usuario()).orElse(null);
+        Usuario usuario = usuarioRepository.findById(nuevo.getIdUsuario()).orElse(null);
         if (usuario == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
         }
-        usuario.setNombre_user(nuevo.getNombre_user());
-        usuario.setEmail_user(nuevo.getEmail_user());
-        usuario.setEstado_user(nuevo.getEstado_user());
+        usuario.setNombre(nuevo.getNombre());
+        usuario.setEmail(nuevo.getEmail());
+        usuario.setEstado(nuevo.getEstado());
         return usuarioRepository.save(usuario);
     }
 

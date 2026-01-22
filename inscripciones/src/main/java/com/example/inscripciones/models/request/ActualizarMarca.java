@@ -9,9 +9,9 @@ import lombok.Data;
 public class ActualizarMarca {
 
     @NotNull(message = "Ingrese Id inscrion para actualizar")
-    private Integer id_inscripcion;
+    private Integer idInscripcion;
 
-    private Integer id_estudiante;
-    private Integer id_curso;
+    private Integer idEstudiante;
+    private Integer idCurso;
     
 }

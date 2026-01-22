@@ -31,20 +31,20 @@ public class UsuarioServiceTest {
     void testObtencionUsuarioPorId() {
 
         Usuario usuario = new Usuario();
-        usuario.setId_usuario(1);
-        usuario.setNombre_user("Juan");
-        usuario.setEmail_user("juan@test.com");
-        usuario.setEstado_user("ACTIVO");
+        usuario.setIdUsuario(1);
+        usuario.setNombre("Juan");
+        usuario.setEmail("juan@test.com");
+        usuario.setEstado("ACTIVO");
 
         when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuario));
 
         Usuario resultado = usuarioService.obtenerUsuarioPorId(1);
 
         assertNotNull(resultado);
-        assertEquals(1, resultado.getId_usuario());
-        assertEquals("Juan", resultado.getNombre_user());
-        assertEquals("juan@test.com", resultado.getEmail_user());
-        assertEquals("ACTIVO", resultado.getEstado_user());
+        assertEquals(1, resultado.getIdUsuario());
+        assertEquals("Juan", resultado.getNombre());
+        assertEquals("juan@test.com", resultado.getEmail());
+        assertEquals("ACTIVO", resultado.getEstado());
 
         verify(usuarioRepository, times(1)).findById(1);
     }

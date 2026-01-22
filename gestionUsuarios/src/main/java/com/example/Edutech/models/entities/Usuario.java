@@ -20,16 +20,16 @@ import lombok.Data;
 public class Usuario extends RepresentationModel<Usuario> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_usuario;
+    private int idUsuario;
 
     @Column(nullable = false)
-    private String nombre_user;
+    private String nombre;
 
     @Column(nullable = false)
-    private String email_user;
+    private String email;
 
     @Column(nullable = false)
-    private String estado_user;
+    private String estado;
 
     @Enumerated(EnumType.STRING) 
     private Rol rol;

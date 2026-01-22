@@ -17,7 +17,7 @@ public class Copia extends EntityModel<Copia> {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private int id_copia;
+    private int idCopia;
 
     @Column(nullable = false)
     private Double version;

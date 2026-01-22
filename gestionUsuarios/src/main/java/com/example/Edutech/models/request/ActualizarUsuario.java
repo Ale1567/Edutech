@@ -7,12 +7,12 @@ import lombok.Data;
 public class ActualizarUsuario {
 
     @NotBlank
-    private int id_usuario;
+    private int idUsuario;
     @NotBlank
-    private String nombre_user;
+    private String nombre;
     @NotBlank 
-    private String email_user;
+    private String email;
     @NotBlank
-    private String estado_user;
+    private String estado;
 
 }

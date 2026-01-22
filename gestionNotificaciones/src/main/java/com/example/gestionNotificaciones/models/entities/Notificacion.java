@@ -17,7 +17,7 @@ public class Notificacion extends RepresentationModel<Notificacion>{
         
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_notif;
+    private int idNotif;
 
     @Column(nullable = false)
     private String titulo;

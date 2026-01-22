@@ -16,7 +16,7 @@ public class Recurso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_recurso;
+    private Long idRecurso;
     
     private String nombre; 
     private Double capacidadTotal;

@@ -16,7 +16,7 @@ import lombok.Data;
 public class Incidencia extends RepresentationModel<Incidencia>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_incidencias;
+    private int idIncidencias;
     
     @Column(nullable = false)
     private String descripcion;

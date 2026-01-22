@@ -38,7 +38,7 @@ public class CopiaService {
     }
 
     public Copia actualizarCopia(ActualizarCopia nuevo){
-        Copia copia = copiaRepository.findById(nuevo.getId_copia()).orElse(null);
+        Copia copia = copiaRepository.findById(nuevo.getIdCopia()).orElse(null);
         if (copia == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Copia no encontrada.");
         }else{

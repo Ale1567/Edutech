@@ -14,7 +14,7 @@ import lombok.Data;
 public class Cupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_cupon;
+    private Long idCupon;
     private String codigo;
     private Integer porcentajeDescuento;
     private Boolean activo;

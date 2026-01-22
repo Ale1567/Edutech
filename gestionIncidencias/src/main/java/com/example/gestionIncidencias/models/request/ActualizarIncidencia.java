@@ -7,7 +7,7 @@ import lombok.Data;
 public class ActualizarIncidencia {
     
     @NotBlank
-    private int id_incidencia;
+    private int idIncidencia;
     @NotBlank
     private String descripcion;
     @NotBlank 

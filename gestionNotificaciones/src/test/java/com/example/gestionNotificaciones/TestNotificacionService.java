@@ -31,7 +31,7 @@ public class TestNotificacionService {
     void testObtencionNotificacionPorId() {
 
         Notificacion notificacion = new Notificacion();
-        notificacion.setId_notif(1);
+        notificacion.setIdNotif(1);
         notificacion.setTitulo("Mensaje de profesor");
         notificacion.setDescripcion("No clase hoy");
 
@@ -40,7 +40,7 @@ public class TestNotificacionService {
         Notificacion resultado = notificacionService.obtenerNotificacionPorId(1);
 
         assertNotNull(resultado);
-        assertEquals(1, resultado.getId_notif());
+        assertEquals(1, resultado.getIdNotif());
         assertEquals("Mensaje de profesor", resultado.getTitulo());
         assertEquals("No clase hoy", resultado.getDescripcion());
 

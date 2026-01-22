@@ -19,15 +19,15 @@ import lombok.Data;
 public class Inscripcion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_inscripcion;
+    private int idInscripcion;
 
     // solicita la id de microservio usuario
     @Column(nullable = false)
-    private int id_estudiante;
+    private int idEstudiante;
 
     // solicita la id del microservio curso
     @Column(nullable = false)
-    private int id_curso;
+    private int idCurso;
 
     // columna donde se guarda la fecha
     @Column(name = "fecha_inscripcion")

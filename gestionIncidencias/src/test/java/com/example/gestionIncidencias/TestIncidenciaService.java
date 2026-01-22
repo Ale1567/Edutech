@@ -31,7 +31,7 @@ public class TestIncidenciaService {
     void testObtencionUsuarioPorId() {
 
         Incidencia incidencia = new Incidencia();
-        incidencia.setId_incidencias(1);
+        incidencia.setIdIncidencias(1);
         incidencia.setDescripcion("Profesor faltante");
         incidencia.setEstado("En revision");
         incidencia.setPrioridad(1);
@@ -42,7 +42,7 @@ public class TestIncidenciaService {
         Incidencia resultado = incidenciaService.obtenerIncidenciasPorId(1);
 
         assertNotNull(resultado);
-        assertEquals(1, resultado.getId_incidencias());
+        assertEquals(1, resultado.getIdIncidencias());
         assertEquals("Profesor faltante", resultado.getDescripcion());
         assertEquals("En revision", resultado.getEstado());
         assertEquals(1, resultado.getPrioridad());

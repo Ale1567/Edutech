@@ -14,7 +14,7 @@ import lombok.Data;
 public class Proveedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_provedor;
+    private Long idProveedor;
 
     private String nombreEmpresa;
     private String ruc;

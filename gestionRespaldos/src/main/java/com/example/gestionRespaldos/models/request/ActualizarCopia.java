@@ -7,7 +7,7 @@ import lombok.Data;
 public class ActualizarCopia {
     
     @NotBlank
-    private int id_copia;
+    private int idCopia;
 
     @NotBlank
     private Double version;

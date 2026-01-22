@@ -7,9 +7,9 @@ import lombok.Data;
 public class AgregarInscripcion {
 
     @NotNull(message = "El id estudiante es obligatorio")
-    private Integer id_estudiante;
+    private Integer idEstudiante;
     
     @NotNull (message = "El id cursos es obligatorio")
-    private Integer id_curso; 
+    private Integer idCurso; 
     
 }

@@ -18,7 +18,7 @@ import lombok.Data;
 public class Consulta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_consulta;
+    private Long idConsulta;
 
     private Long estudianteId;
     private String titulo;

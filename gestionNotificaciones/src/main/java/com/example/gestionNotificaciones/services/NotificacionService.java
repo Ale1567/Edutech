@@ -38,7 +38,7 @@ public class NotificacionService {
     }
 
     public Notificacion actualizarNotificacion(ActualizarNotif nuevo){
-        Notificacion notificacion = notificacionRepository.findById(nuevo.getId_notif()).orElse(null);
+        Notificacion notificacion = notificacionRepository.findById(nuevo.getIdNotif()).orElse(null);
         if (notificacion == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Notificacion no encontrada.");
         }else{
