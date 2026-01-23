@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UsuarioDto {
-    private int id_usuario;
-    private String nombre_user;
+    private int idUsuario;
+    private String nombreUsuario;
     private String rol;
 }
