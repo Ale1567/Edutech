@@ -1,41 +1,58 @@
 package com.example.inscripciones.models.entities;
 
 import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import com.example.inscripciones.models.enums.EstadoInscripcion;
 import lombok.Data;
+
+import jakarta.persistence.*; 
 
 @Entity
 @Data
-@Table (name = "inscripcion")
-
+@Table(name = "inscripcion")
 public class Inscripcion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idInscripcion;
 
-    // solicita la id de microservio usuario
+    // ID del estudiante (Microservicio Usuarios)
     @Column(nullable = false)
     private int idEstudiante;
 
-    // solicita la id del microservio curso
+    // ID del curso (Microservicio Cursos)
     @Column(nullable = false)
-    private int idCurso;
+    private Long idCurso;
 
-    // columna donde se guarda la fecha
+    // --- NUEVOS CAMPOS DE SEGUIMIENTO ---
+
+    // 1. El porcentaje de avance (0.0 a 100.0)
+    // Le ponemos 0.0 por defecto para que no sea null al crear
+    @Column(name = "progreso_porcentaje")
+    private Double progreso = 0.0;
+
+    // 2. Estado del curso (Usamos un Enum para evitar errores de escritura)
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private EstadoInscripcion estado = EstadoInscripcion.CURSANDO;
+
+    // 3. Última vez que el alumno entró al curso (Ideal para "Continuar donde dejaste")
+    @Column(name = "ultimo_acceso")
+    private LocalDateTime ultimoAcceso;
+
+    // 4. Fecha en que completó el 100%
+    @Column(name = "fecha_fin")
+    private LocalDateTime fechaFin;
+
+    // --- CAMPOS ORIGINALES ---
+
     @Column(name = "fecha_inscripcion")
     private LocalDateTime fechaInscripcion;
-   
-    @PrePersist  // permite envia de forma automatica la fecha 
+
+    @PrePersist 
     protected void onCreate() {
         this.fechaInscripcion = LocalDateTime.now();
+        // Al inscribirse, el último acceso es "ahora"
+        this.ultimoAcceso = LocalDateTime.now(); 
     }
 }
 
