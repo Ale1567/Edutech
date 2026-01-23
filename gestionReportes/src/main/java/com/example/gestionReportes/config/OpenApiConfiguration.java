@@ -1,4 +1,4 @@
-package com.example.gestionIncidencias.config;
+package com.example.gestionReportes.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +13,13 @@ public class OpenApiConfiguration {
     public OpenAPI documentacionOpenApi(){
         return new OpenAPI()
         .info(new Info()
-        .title("Gestion de incidencias")
+        .title("Gestion de reportes")
         .version("1.1")
-        .description("Agrega incidencias")
+        .description("Agrega reportes")
         .contact(new Contact()
-            .name("Ale")
+            .name("Edutech")
             .email("edutech@hmail.com")
             .url("eduApi.cl")));
     }
+    
 }

@@ -1,7 +1,5 @@
 package com.example.Edutech.models.entities;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import com.example.Edutech.models.enums.Rol;
 
 import jakarta.persistence.Column;
@@ -17,7 +15,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "usuario")
-public class Usuario extends RepresentationModel<Usuario> {
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idUsuario;

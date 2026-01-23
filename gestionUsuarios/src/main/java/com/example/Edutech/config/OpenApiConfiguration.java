@@ -17,7 +17,7 @@ public class OpenApiConfiguration {
         .version("1.1")
         .description("Agrega Usuarios")
         .contact(new Contact()
-            .name("Ale")
+            .name("Edutech")
             .email("edutech@hmail.com")
             .url("eduswag.cl")));
     }

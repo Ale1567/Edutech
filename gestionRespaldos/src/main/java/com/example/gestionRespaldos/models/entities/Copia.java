@@ -1,6 +1,5 @@
 package com.example.gestionRespaldos.models.entities;
 
-import org.springframework.hateoas.EntityModel;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +12,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "copiaSeguridad")
-public class Copia extends EntityModel<Copia> {
+public class Copia {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
