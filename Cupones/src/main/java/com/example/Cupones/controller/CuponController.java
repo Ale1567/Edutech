@@ -16,9 +16,8 @@ import com.example.Cupones.models.request.AgregarCupon;
 import com.example.Cupones.service.CuponService;
 
 @RestController
-@RequestMapping("/api/cupones")
-
-public class CuponController {
+@RequestMapping("/cupones")
+public class CuponController extends BaseController { 
 
     @Autowired
     private CuponService cuponService;
