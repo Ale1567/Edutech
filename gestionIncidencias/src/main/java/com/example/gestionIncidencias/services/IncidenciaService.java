@@ -38,7 +38,7 @@ public class IncidenciaService {
         return incidenciaRepository.save(incidencia);
     }
 
-    public Incidencia actualizarIncidencia(ActualizarIncidencia nuevo){
+    public Incidencia actualizarIncidencia(int idIncidencia, ActualizarIncidencia nuevo){
         Incidencia incidencia = incidenciaRepository.findById(nuevo.getIdIncidencia()).orElse(null);
         if (incidencia == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Incidencia no encontrada");
