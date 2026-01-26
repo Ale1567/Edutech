@@ -41,8 +41,8 @@ public class TestCopiaService {
 
         assertNotNull(resultado);
         assertEquals(1, resultado.getIdCopia());
-        assertEquals("Juan", resultado.getNombre());
-        assertEquals("juan@test.com", resultado.getVersion());
+        assertEquals("Copia 21/01/2026", resultado.getNombre());
+        assertEquals(1.1, resultado.getVersion());
 
         verify(copiaRepository, times(1)).findById(1);
     }

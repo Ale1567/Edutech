@@ -1,7 +1,5 @@
 package com.example.gestionNotificaciones.models.entities;
 
-import org.springframework.hateoas.RepresentationModel;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +11,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "notificacion")
-public class Notificacion extends RepresentationModel<Notificacion>{
+public class Notificacion {
         
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

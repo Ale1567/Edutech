@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,14 +34,15 @@ public class IncidenciaController {
         return incidenciaService.obtenerIncidencias();
     }
 
-     @GetMapping("/{incidenciaid}")
+     @GetMapping("/{idIncidencia}")
     public EntityModel<Incidencia> obtenerPorId(@PathVariable int idIncidencia) {
         Incidencia incidencia = incidenciaService.obtenerIncidenciasPorId(idIncidencia);
 
-        Link deleteLink = linkTo(IncidenciaController.class).slash(idIncidencia).withRel("Eliminar incidencia");
-        Link selfLink = linkTo(methodOn(IncidenciaController.class).obtenerTodo()).withRel("Obtener todas las incidencias");
-   
-        return EntityModel.of(incidencia,selfLink,deleteLink);
+            Link selfLink = linkTo(methodOn(IncidenciaController.class).obtenerPorId(idIncidencia)).withSelfRel();
+            Link deleteLink = linkTo(methodOn(IncidenciaController.class).eliminarIncidencia(idIncidencia)).withRel("eliminar");
+            Link updateLink = linkTo(methodOn(IncidenciaController.class).actualizarIncidencia(idIncidencia, null)).withRel("actualizar");
+            Link allLink = linkTo(methodOn(IncidenciaController.class).obtenerTodo()).withRel("todas");
+        return EntityModel.of(incidencia,selfLink,deleteLink,allLink,updateLink);
     }
 
     @PostMapping("")
@@ -49,13 +51,13 @@ public class IncidenciaController {
     }
     
 
-    @PutMapping("")
-    public Incidencia actualizarIncidencia(@RequestBody ActualizarIncidencia nueva ) {
-        return incidenciaService.actualizarIncidencia(nueva);
+    @PutMapping("/{idIncidencia}")
+    public Incidencia actualizarIncidencia(@PathVariable int idIncidencia,@RequestBody ActualizarIncidencia nueva) {
+    return incidenciaService.actualizarIncidencia(idIncidencia, nueva);
     }
 
     @DeleteMapping("/{idIncidencia}")
-    public String eliminarIncidencia(@PathVariable int idIncidencia){
-        return incidenciaService.eliminarIncidencia(idIncidencia);
+    public ResponseEntity<Void> eliminarIncidencia(@PathVariable int idIncidencia){incidenciaService.eliminarIncidencia(idIncidencia);
+    return ResponseEntity.noContent().build(); 
     }
 }
