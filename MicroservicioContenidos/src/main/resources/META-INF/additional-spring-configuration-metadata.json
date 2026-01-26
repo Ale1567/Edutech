@@ -1,9 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "media.location",
-      "type": "java.lang.String",
-      "description": "Ruta donde se guardarán los archivos."
-    }
-  ]
-}

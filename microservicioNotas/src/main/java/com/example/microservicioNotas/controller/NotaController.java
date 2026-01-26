@@ -1,12 +1,15 @@
 package com.example.microservicioNotas.controller;
 
 
+import com.example.microservicioNotas.models.dto.NotaUpdateDto;
 import com.example.microservicioNotas.models.dto.NotaRequest;
 import com.example.microservicioNotas.models.entities.Nota;
 import com.example.microservicioNotas.services.NotaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
 
 import java.util.List;
 
@@ -31,4 +34,15 @@ public class NotaController {
     public ResponseEntity<List<Nota>> listarPorAlumno(@PathVariable Integer id) {
         return ResponseEntity.ok(service.listarPorAlumno(id));
     }
+
+    @PutMapping("/{id}")
+public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody NotaUpdateDto dto) {
+    try {
+        Nota actualizada = service.actualizarNota(id, dto.getValor(), dto.getObservacion());
+        return ResponseEntity.ok(actualizada);
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }
+}
+

@@ -8,6 +8,7 @@ import com.example.microservicioEvaluaciones.models.entities.Evaluacion;
 import com.example.microservicioEvaluaciones.exceptions.BusinessRuleException;
 import com.example.microservicioEvaluaciones.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value; // Importante
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -24,21 +25,26 @@ public class EvaluacionService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final String URL_CURSOS = "http://localhost:8080/api/cursos/";
+    // REEMPLAZO: Sacamos la URL del properties para que sea dinámica en AWS
+    @Value("${microservicio.cursos.url}")
+    private String urlCursosBase;
 
     public EvaluacionResponse crearEvaluacion(EvaluacionRequest request) {
         
         CursoDto cursoDto;
         
         try {
-            cursoDto = restTemplate.getForObject(URL_CURSOS + request.getCursoId(), CursoDto.class);
+            // Usamos la variable inyectada + la ruta de tu API
+            String urlFinal = urlCursosBase + "/api/cursos/" + request.getCursoId();
+            cursoDto = restTemplate.getForObject(urlFinal, CursoDto.class);
             
         } catch (HttpClientErrorException.NotFound e) {
             throw new ResourceNotFoundException("El curso con ID " + request.getCursoId() + " no existe.");
         } catch (Exception e) {
-            throw new RuntimeException("Error al conectar con el servicio de Cursos.");
+            throw new RuntimeException("Error al conectar con el servicio de Cursos en la nube.");
         }
 
+        // --- TU LÓGICA DE NEGOCIO (INTACTA) ---
         if (request.getFechaFin().isBefore(request.getFechaInicio())) {
             throw new BusinessRuleException("La fecha de término no puede ser anterior a la de inicio.");
         }
@@ -67,10 +73,10 @@ public class EvaluacionService {
     }
 
     public List<EvaluacionResponse> listarPorCurso(Long cursoId) {
-
         CursoDto cursoDto;
         try {
-            cursoDto = restTemplate.getForObject(URL_CURSOS + cursoId, CursoDto.class);
+            String urlFinal = urlCursosBase + "/api/cursos/" + cursoId;
+            cursoDto = restTemplate.getForObject(urlFinal, CursoDto.class);
         } catch (HttpClientErrorException.NotFound e) {
             throw new ResourceNotFoundException("El curso con ID " + cursoId + " no existe.");
         }
@@ -82,12 +88,8 @@ public class EvaluacionService {
                 .toList();
     }
 
-
     private EvaluacionResponse mapToDto(Evaluacion entidad, String nombreCurso) {
-        
-
         String estado = LocalDateTime.now().isAfter(entidad.getFechaFin()) ? "CERRADA" : "ABIERTA";
-
         return new EvaluacionResponse(
             entidad.getId(), 
             entidad.getTitulo(),

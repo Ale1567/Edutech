@@ -1,10 +1,10 @@
 package com.example.microservicioNotas.services;
 
-
 import com.example.microservicioNotas.models.dto.*;
 import com.example.microservicioNotas.models.entities.Nota;
 import com.example.microservicioNotas.repositories.NotaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value; // Importante
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -20,8 +20,12 @@ public class NotaService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final String URL_USUARIOS = "http://localhost:8080/api/usuarios/"; 
-    private final String URL_EVALUACIONES = "http://localhost:8090/api/evaluaciones/";
+    // Inyectamos las URLs desde el properties
+    @Value("${microservicio.usuarios.url}")
+    private String urlUsuariosBase;
+
+    @Value("${microservicio.evaluaciones.url}")
+    private String urlEvaluacionesBase;
 
     public Nota guardarNota(NotaRequest request) {
 
@@ -29,10 +33,11 @@ public class NotaService {
             throw new RuntimeException("El alumno ya tiene nota en esta evaluación");
         }
 
-
         UsuarioDto alumno;
         try {
-            alumno = restTemplate.getForObject(URL_USUARIOS + request.getAlumnoId(), UsuarioDto.class);
+            // Ajustamos la ruta para que use la URL de la nube
+            String urlUsuarios = urlUsuariosBase + "/api/usuarios/" + request.getAlumnoId();
+            alumno = restTemplate.getForObject(urlUsuarios, UsuarioDto.class);
         } catch (HttpClientErrorException.NotFound e) {
             throw new RuntimeException("Alumno no encontrado en el sistema");
         }
@@ -43,11 +48,12 @@ public class NotaService {
 
         EvaluacionDto evaluacion;
         try {
-            evaluacion = restTemplate.getForObject(URL_EVALUACIONES + request.getEvaluacionId(), EvaluacionDto.class);
+            // Ajustamos la ruta para que use la URL de evaluaciones (nuestro otro micro)
+            String urlEvas = urlEvaluacionesBase + "/api/evaluaciones/" + request.getEvaluacionId();
+            evaluacion = restTemplate.getForObject(urlEvas, EvaluacionDto.class);
         } catch (HttpClientErrorException.NotFound e) {
             throw new RuntimeException("Evaluación no encontrada");
         }
-
 
         if (LocalDateTime.now().isAfter(evaluacion.getFechaFin())) {
             throw new RuntimeException("La evaluación ya cerró");
@@ -65,4 +71,32 @@ public class NotaService {
     public List<Nota> listarPorAlumno(Integer alumnoId) {
         return repository.findByAlumnoId(alumnoId);
     }
+
+    public Nota actualizarNota(Long id, Double nuevoValor, String nuevaObservacion) {
+    // 1. Buscar la nota usando tu nombre de ID (idNota)
+    Nota notaExistente = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("La nota con ID " + id + " no existe"));
+
+    // 2. Validar que la evaluación aún permite cambios
+    EvaluacionDto evaluacion;
+    try {
+        String urlEvas = urlEvaluacionesBase + "/api/evaluaciones/" + notaExistente.getEvaluacionId();
+        evaluacion = restTemplate.getForObject(urlEvas, EvaluacionDto.class);
+    } catch (Exception e) {
+        throw new RuntimeException("Error: No se pudo verificar la evaluación en la nube.");
+    }
+
+    // Usamos el fechaFin de tu DTO
+    if (evaluacion != null && LocalDateTime.now().isAfter(evaluacion.getFechaFin())) {
+        throw new RuntimeException("Acceso denegado: La evaluación '" + evaluacion.getTitulo() + "' ya cerró.");
+    }
+
+    // 3. Actualizar con tus setters
+    notaExistente.setCalificacion(nuevoValor);
+    notaExistente.setObservacion(nuevaObservacion);
+
+    return repository.save(notaExistente);
 }
+
+}
+

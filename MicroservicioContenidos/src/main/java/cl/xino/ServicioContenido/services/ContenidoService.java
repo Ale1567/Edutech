@@ -33,12 +33,16 @@ public class ContenidoService {
     @Value("${media.location}")
     private String ubicacionMedia;
 
+
+    @Value("${microservicio.cursos.url}")
+    private String urlCursosBase;
+
     public Contenido guardarContenido(ContenidoRequest request) throws IOException {
+        Long cursoId = request.getIdCurso();
         
 
-        Long cursoId = request.getIdCurso();
-        String urlCursos = "http://localhost:8080/api/cursos/" + cursoId;
-        // Validar existencia del curso
+        String urlCursos = urlCursosBase + "/api/cursos/" + cursoId;
+        
         try {
             restTemplate.getForEntity(urlCursos, Object.class);
         } catch (HttpClientErrorException.NotFound e) {
@@ -48,30 +52,24 @@ public class ContenidoService {
         }
 
         MultipartFile archivo = request.getArchivo();
-
-        // Validar que no venga vacío
         if (archivo.isEmpty()) {
             throw new RuntimeException("El archivo está vacío");
         }
 
-
-        // Generar nombre unico para el archivo subido
         String nombreUnico = UUID.randomUUID().toString() + "_" + archivo.getOriginalFilename();
-        
         Path rutaBase = Paths.get(ubicacionMedia);
+        
         if (!Files.exists(rutaBase)) {
             Files.createDirectories(rutaBase); 
         }
         
         Path rutaFinal = rutaBase.resolve(nombreUnico);
-
         Files.copy(archivo.getInputStream(), rutaFinal);
 
         Contenido contenidoNuevo = new Contenido();
         contenidoNuevo.setTitulo(request.getTitulo());
         contenidoNuevo.setDescripcion(request.getDescripcion());
         contenidoNuevo.setIdCurso(request.getIdCurso());
-        
         contenidoNuevo.setRutaArchivo(rutaFinal.toString());
         contenidoNuevo.setNombreOriginal(archivo.getOriginalFilename());
         contenidoNuevo.setTipoContenido(archivo.getContentType());

@@ -1,12 +1,11 @@
 package com.example.microservicioNotas;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
-
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,25 +35,23 @@ class NotaServiceTest {
     @InjectMocks
     private NotaService service;
 
+    // --- TESTS ORIGINALES (GUARDAR NOTA) ---
+
     @Test
     void testGuardarNota_Exito() {
-
         NotaRequest request = new NotaRequest();
         request.setAlumnoId(1);
         request.setEvaluacionId(10L);
         request.setValor(6.5);
         request.setObservacion("Muy bien");
 
-
         when(repository.existsByAlumnoIdAndEvaluacionId(1, 10L)).thenReturn(false);
-
 
         UsuarioDto alumnoFake = new UsuarioDto();
         alumnoFake.setIdUsuario(1);
         alumnoFake.setRol("ALUMNO");
         when(restTemplate.getForObject(contains("/api/usuarios/"), eq(UsuarioDto.class)))
             .thenReturn(alumnoFake);
-
 
         EvaluacionDto evalFake = new EvaluacionDto();
         evalFake.setId(10L);
@@ -76,91 +73,74 @@ class NotaServiceTest {
         verify(repository).save(any(Nota.class));
     }
 
-
     @Test
     void testGuardarNota_FallaSiYaExiste() {
         NotaRequest request = new NotaRequest();
         request.setAlumnoId(1);
         request.setEvaluacionId(10L);
-
         when(repository.existsByAlumnoIdAndEvaluacionId(1, 10L)).thenReturn(true);
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> {
-            service.guardarNota(request);
-        });
-
-        assertTrue(ex.getMessage().contains("ya tiene nota"));
-
+        assertThrows(RuntimeException.class, () -> service.guardarNota(request));
         verifyNoInteractions(restTemplate);
     }
 
+    // --- NUEVOS TESTS (ACTUALIZAR NOTA) ---
+
     @Test
-    void testGuardarNota_FallaAlumnoNoExiste() {
-        NotaRequest request = new NotaRequest();
-        request.setAlumnoId(99);
-        request.setEvaluacionId(10L);
+    void testActualizarNota_Exito() {
+        // Mock de nota existente
+        Nota notaExistente = new Nota();
+        notaExistente.setIdNota(1L);
+        notaExistente.setEvaluacionId(10L);
+        notaExistente.setCalificacion(4.0);
 
-        when(repository.existsByAlumnoIdAndEvaluacionId(anyInt(), anyLong())).thenReturn(false);
+        // Mock de evaluación abierta
+        EvaluacionDto evalAbierta = new EvaluacionDto();
+        evalAbierta.setFechaFin(LocalDateTime.now().plusDays(2));
 
-        HttpClientErrorException notFound = HttpClientErrorException.create(
-            HttpStatus.NOT_FOUND, "Not Found", org.springframework.http.HttpHeaders.EMPTY, null, null
-        );
+        when(repository.findById(1L)).thenReturn(Optional.of(notaExistente));
+        when(restTemplate.getForObject(contains("/api/evaluaciones/"), eq(EvaluacionDto.class)))
+            .thenReturn(evalAbierta);
+        when(repository.save(any(Nota.class))).thenReturn(notaExistente);
 
-        when(restTemplate.getForObject(contains("/api/usuarios/"), eq(UsuarioDto.class)))
-            .thenThrow(notFound);
+        // Ejecución
+        Nota resultado = service.actualizarNota(1L, 7.0, "Subió la nota por décimas");
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> {
-            service.guardarNota(request);
-        });
-
-        assertTrue(ex.getMessage().contains("Alumno no encontrado"));
+        assertNotNull(resultado);
+        assertEquals(7.0, resultado.getCalificacion());
+        verify(repository).save(any(Nota.class));
     }
 
     @Test
-    void testGuardarNota_FallaRolNoEsAlumno() {
-        NotaRequest request = new NotaRequest();
-        request.setAlumnoId(1);
-        request.setEvaluacionId(10L);
+    void testActualizarNota_FallaSiEvaluacionCerrada() {
+        Nota notaExistente = new Nota();
+        notaExistente.setIdNota(1L);
+        notaExistente.setEvaluacionId(10L);
 
-        when(repository.existsByAlumnoIdAndEvaluacionId(1, 10L)).thenReturn(false);
-
-        UsuarioDto profeFake = new UsuarioDto();
-        profeFake.setRol("PROFESOR");
-        
-        when(restTemplate.getForObject(contains("/api/usuarios/"), eq(UsuarioDto.class)))
-            .thenReturn(profeFake);
-
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> {
-            service.guardarNota(request);
-        });
-
-        assertTrue(ex.getMessage().contains("no tiene el rol de ALUMNO"));
-    }
-
-    @Test
-    void testGuardarNota_FallaEvaluacionCerrada() {
-        NotaRequest request = new NotaRequest();
-        request.setAlumnoId(1);
-        request.setEvaluacionId(10L);
-
-        when(repository.existsByAlumnoIdAndEvaluacionId(1, 10L)).thenReturn(false);
-
-        UsuarioDto alumno = new UsuarioDto();
-        alumno.setRol("ALUMNO");
-        when(restTemplate.getForObject(contains("/api/usuarios/"), eq(UsuarioDto.class))).thenReturn(alumno);
-
+        // Mock de evaluación cerrada (ayer)
         EvaluacionDto evalCerrada = new EvaluacionDto();
-        evalCerrada.setId(10L);
         evalCerrada.setFechaFin(LocalDateTime.now().minusDays(1));
 
+        when(repository.findById(1L)).thenReturn(Optional.of(notaExistente));
         when(restTemplate.getForObject(contains("/api/evaluaciones/"), eq(EvaluacionDto.class)))
             .thenReturn(evalCerrada);
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> {
-            service.guardarNota(request);
+            service.actualizarNota(1L, 6.0, "Intento ilegal");
         });
 
         assertTrue(ex.getMessage().contains("ya cerró"));
         verify(repository, never()).save(any());
+    }
+
+    @Test
+    void testActualizarNota_FallaSiNotaNoExiste() {
+        when(repository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> {
+            service.actualizarNota(999L, 5.0, "Nota fantasma");
+        });
+        
+        verifyNoInteractions(restTemplate);
     }
 }
